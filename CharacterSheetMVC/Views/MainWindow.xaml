@@ -1,0 +1,893 @@
+﻿<Window x:Class="CharacterSheetMVC.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CharacterSheetMVC"
+        mc:Ignorable="d"
+          Title="MainWindow" Height="1080" Width="1920" MaxHeight="1080" MaxWidth="1920" MinHeight="1080" MinWidth="1920">
+    <Window.Resources>
+        <SolidColorBrush x:Key="TabItem.Selected.Background" Color="#FF061A2A"/>
+        <SolidColorBrush x:Key="TabItem.Selected.Border" Color="#FF061A2A"/>
+        <Style x:Key="TabControlNewStyle" TargetType="{x:Type TabControl}">
+            <Setter Property="Padding" Value="2"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Background" Value="{StaticResource TabItem.Selected.Background}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource TabItem.Selected.Border}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TabControl}">
+                        <Grid x:Name="templateRoot" ClipToBounds="true" SnapsToDevicePixels="true" KeyboardNavigation.TabNavigation="Local">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition x:Name="ColumnDefinition0"/>
+                                <ColumnDefinition x:Name="ColumnDefinition1" Width="0"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition x:Name="RowDefinition0" Height="Auto"/>
+                                <RowDefinition x:Name="RowDefinition1" Height="*"/>
+                            </Grid.RowDefinitions>
+                            <TabPanel x:Name="headerPanel" Background="{x:Null}" Grid.Column="0" IsItemsHost="true" Margin="2,2,2,0" Grid.Row="0" KeyboardNavigation.TabIndex="1" Panel.ZIndex="1"/>
+                            <Border x:Name="contentPanel" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Grid.Column="0" KeyboardNavigation.DirectionalNavigation="Contained" Grid.Row="1" KeyboardNavigation.TabIndex="2" KeyboardNavigation.TabNavigation="Local">
+                                <ContentPresenter x:Name="PART_SelectedContentHost" ContentSource="SelectedContent" Margin="{TemplateBinding Padding}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                            </Border>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="TabStripPlacement" Value="Bottom">
+                                <Setter Property="Grid.Row" TargetName="headerPanel" Value="1"/>
+                                <Setter Property="Grid.Row" TargetName="contentPanel" Value="0"/>
+                                <Setter Property="Height" TargetName="RowDefinition0" Value="*"/>
+                                <Setter Property="Height" TargetName="RowDefinition1" Value="Auto"/>
+                                <Setter Property="Margin" TargetName="headerPanel" Value="2,0,2,2"/>
+                            </Trigger>
+                            <Trigger Property="TabStripPlacement" Value="Left">
+                                <Setter Property="Grid.Row" TargetName="headerPanel" Value="0"/>
+                                <Setter Property="Grid.Row" TargetName="contentPanel" Value="0"/>
+                                <Setter Property="Grid.Column" TargetName="headerPanel" Value="0"/>
+                                <Setter Property="Grid.Column" TargetName="contentPanel" Value="1"/>
+                                <Setter Property="Width" TargetName="ColumnDefinition0" Value="Auto"/>
+                                <Setter Property="Width" TargetName="ColumnDefinition1" Value="*"/>
+                                <Setter Property="Height" TargetName="RowDefinition0" Value="*"/>
+                                <Setter Property="Height" TargetName="RowDefinition1" Value="0"/>
+                                <Setter Property="Margin" TargetName="headerPanel" Value="2,2,0,2"/>
+                            </Trigger>
+                            <Trigger Property="TabStripPlacement" Value="Right">
+                                <Setter Property="Grid.Row" TargetName="headerPanel" Value="0"/>
+                                <Setter Property="Grid.Row" TargetName="contentPanel" Value="0"/>
+                                <Setter Property="Grid.Column" TargetName="headerPanel" Value="1"/>
+                                <Setter Property="Grid.Column" TargetName="contentPanel" Value="0"/>
+                                <Setter Property="Width" TargetName="ColumnDefinition0" Value="*"/>
+                                <Setter Property="Width" TargetName="ColumnDefinition1" Value="Auto"/>
+                                <Setter Property="Height" TargetName="RowDefinition0" Value="*"/>
+                                <Setter Property="Height" TargetName="RowDefinition1" Value="0"/>
+                                <Setter Property="Margin" TargetName="headerPanel" Value="0,2,2,2"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="TextElement.Foreground" TargetName="templateRoot" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="FocusVisual">
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Rectangle Margin="2" StrokeDashArray="1 2" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" SnapsToDevicePixels="true" StrokeThickness="1"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <LinearGradientBrush x:Key="TabItem.Static.Background" EndPoint="0,1" StartPoint="0,0">
+            <GradientStop Color="Transparent" Offset="0.0"/>
+            <GradientStop Color="#E5E5E5" Offset="1.0"/>
+        </LinearGradientBrush>
+        <SolidColorBrush x:Key="TabItem.Static.Border" Color="#ACACAC"/>
+        <LinearGradientBrush x:Key="TabItem.MouseOver.Background" EndPoint="0,1" StartPoint="0,0">
+            <GradientStop Color="#ECF4FC" Offset="0.0"/>
+            <GradientStop Color="#DCECFC" Offset="1.0"/>
+        </LinearGradientBrush>
+        <SolidColorBrush x:Key="TabItem.MouseOver.Border"/>
+        <SolidColorBrush x:Key="TabItem.Selected.Background1" Color="#FF061A2A"/>
+        <SolidColorBrush x:Key="TabItem.Selected.Border1" Color="#FFF9A817"/>
+        <SolidColorBrush x:Key="TabItem.Disabled.Background" Color="#FF061A2A"/>
+        <SolidColorBrush x:Key="TabItem.Disabled.Border" Color="#FF061A2A"/>
+        <Style x:Key="TabItemNewStyle" TargetType="{x:Type TabItem}">
+            <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="Background" Value="{StaticResource TabItem.Static.Background}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource TabItem.Static.Border}"/>
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="Padding" Value="6,2,6,2"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TabItem}">
+                        <Grid x:Name="templateRoot" SnapsToDevicePixels="true">
+                            <Border x:Name="mainBorder" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="0,0,0,5" Margin="0">
+                                <Border x:Name="innerBorder" Background="{StaticResource TabItem.Selected.Background1}" BorderBrush="{StaticResource TabItem.Selected.Border1}" BorderThickness="0,0,0,5" Margin="5" Opacity="0"/>
+                            </Border>
+                            <ContentPresenter x:Name="contentPresenter" ContentSource="Header" Focusable="False" HorizontalAlignment="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="true"/>
+                                    <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}" Value="Left"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Background" TargetName="mainBorder" Value="{StaticResource TabItem.MouseOver.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="mainBorder" Value="{StaticResource TabItem.MouseOver.Border}"/>
+                                <Setter Property="BorderThickness" TargetName="innerBorder" Value="0,0,0,5"/>
+                                <Setter Property="BorderThickness" TargetName="mainBorder" Value="0,0,0,5"/>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="true"/>
+                                    <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}" Value="Bottom"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Background" TargetName="mainBorder" Value="{StaticResource TabItem.MouseOver.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="mainBorder" Value="{StaticResource TabItem.MouseOver.Border}"/>
+                                <Setter Property="BorderThickness" TargetName="innerBorder" Value="0,0,0,5"/>
+                                <Setter Property="BorderThickness" TargetName="mainBorder" Value="0,0,0,5"/>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="true"/>
+                                    <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}" Value="Right"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Background" TargetName="mainBorder" Value="{StaticResource TabItem.MouseOver.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="mainBorder" Value="{StaticResource TabItem.MouseOver.Border}"/>
+                                <Setter Property="BorderThickness" TargetName="innerBorder" Value="0,0,0,5"/>
+                                <Setter Property="BorderThickness" TargetName="mainBorder" Value="0,0,0,5"/>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="true"/>
+                                    <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}" Value="Top"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Background" TargetName="mainBorder" Value="{StaticResource TabItem.MouseOver.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="mainBorder" Value="{StaticResource TabItem.MouseOver.Border}"/>
+                                <Setter Property="BorderThickness" TargetName="innerBorder" Value="0,0,0,5"/>
+                                <Setter Property="BorderThickness" TargetName="mainBorder" Value="0,0,0,5"/>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Self}}" Value="false"/>
+                                    <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}" Value="Left"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Opacity" TargetName="contentPresenter" Value="0.56"/>
+                                <Setter Property="Background" TargetName="mainBorder" Value="{StaticResource TabItem.Disabled.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="mainBorder" Value="{StaticResource TabItem.Disabled.Border}"/>
+                                <Setter Property="BorderThickness" TargetName="innerBorder" Value="0,0,0,0"/>
+                                <Setter Property="BorderThickness" TargetName="mainBorder" Value="0,0,0,0"/>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Self}}" Value="false"/>
+                                    <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}" Value="Bottom"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Opacity" TargetName="contentPresenter" Value="0.56"/>
+                                <Setter Property="Background" TargetName="mainBorder" Value="{StaticResource TabItem.Disabled.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="mainBorder" Value="{StaticResource TabItem.Disabled.Border}"/>
+                                <Setter Property="BorderThickness" TargetName="innerBorder" Value="0,0,0,0"/>
+                                <Setter Property="BorderThickness" TargetName="mainBorder" Value="0,0,0,0"/>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Self}}" Value="false"/>
+                                    <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}" Value="Right"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Opacity" TargetName="contentPresenter" Value="0.56"/>
+                                <Setter Property="Background" TargetName="mainBorder" Value="{StaticResource TabItem.Disabled.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="mainBorder" Value="{StaticResource TabItem.Disabled.Border}"/>
+                                <Setter Property="BorderThickness" TargetName="innerBorder" Value="0,0,0,0"/>
+                                <Setter Property="BorderThickness" TargetName="mainBorder" Value="0,0,0,0"/>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Self}}" Value="false"/>
+                                    <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}" Value="Top"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Opacity" TargetName="contentPresenter" Value="0.56"/>
+                                <Setter Property="Background" TargetName="mainBorder" Value="{StaticResource TabItem.Disabled.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="mainBorder" Value="{StaticResource TabItem.Disabled.Border}"/>
+                                <Setter Property="BorderThickness" TargetName="innerBorder" Value="0,0,0,0"/>
+                                <Setter Property="BorderThickness" TargetName="mainBorder" Value="0,0,0,0"/>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="false"/>
+                                    <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}" Value="Left"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="BorderThickness" TargetName="innerBorder" Value="0,0,0,5"/>
+                                <Setter Property="BorderThickness" TargetName="mainBorder" Value="0,0,0,5"/>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="true"/>
+                                    <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}" Value="Left"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Panel.ZIndex" Value="1"/>
+                                <Setter Property="Margin" Value="-2,-2,0,-2"/>
+                                <Setter Property="Opacity" TargetName="innerBorder" Value="1"/>
+                                <Setter Property="BorderThickness" TargetName="innerBorder" Value="0,0,0,5"/>
+                                <Setter Property="BorderThickness" TargetName="mainBorder" Value="0,0,0,5"/>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="false"/>
+                                    <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}" Value="Bottom"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="BorderThickness" TargetName="innerBorder" Value="0,0,0,5"/>
+                                <Setter Property="BorderThickness" TargetName="mainBorder" Value="0,0,0,5"/>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="true"/>
+                                    <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}" Value="Bottom"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Panel.ZIndex" Value="1"/>
+                                <Setter Property="Margin" Value="-2,0,-2,-2"/>
+                                <Setter Property="Opacity" TargetName="innerBorder" Value="1"/>
+                                <Setter Property="BorderThickness" TargetName="innerBorder" Value="0,0,0,5"/>
+                                <Setter Property="BorderThickness" TargetName="mainBorder" Value="0,0,0,5"/>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="false"/>
+                                    <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}" Value="Right"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="BorderThickness" TargetName="innerBorder" Value="0,0,0,5"/>
+                                <Setter Property="BorderThickness" TargetName="mainBorder" Value="0,0,0,5"/>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="true"/>
+                                    <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}" Value="Right"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Panel.ZIndex" Value="1"/>
+                                <Setter Property="Margin" Value="0,-2,-2,-2"/>
+                                <Setter Property="Opacity" TargetName="innerBorder" Value="1"/>
+                                <Setter Property="BorderThickness" TargetName="innerBorder" Value="0,0,0,5"/>
+                                <Setter Property="BorderThickness" TargetName="mainBorder" Value="0,0,0,5"/>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="false"/>
+                                    <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}" Value="Top"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="BorderThickness" TargetName="innerBorder" Value="0,0,0,5"/>
+                                <Setter Property="BorderThickness" TargetName="mainBorder" Value="0,0,0,5"/>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="true"/>
+                                    <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}" Value="Top"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Panel.ZIndex" Value="1"/>
+                                <Setter Property="Margin" Value="-2,-2,-2,0"/>
+                                <Setter Property="Opacity" TargetName="innerBorder" Value="1"/>
+                                <Setter Property="BorderThickness" TargetName="innerBorder" Value="0,0,0,5"/>
+                                <Setter Property="BorderThickness" TargetName="mainBorder" Value="0,0,0,5"/>
+                            </MultiDataTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="FocusVisual1">
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Rectangle Margin="2" StrokeDashArray="1 2" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" SnapsToDevicePixels="true" StrokeThickness="1"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <SolidColorBrush x:Key="Button.Static.Background" Color="#FFDDDDDD"/>
+        <SolidColorBrush x:Key="Button.Static.Border" Color="#FF707070"/>
+        <SolidColorBrush x:Key="Button.MouseOver.Background" Color="#FFBEE6FD"/>
+        <SolidColorBrush x:Key="Button.MouseOver.Border" Color="#FF3C7FB1"/>
+        <SolidColorBrush x:Key="Button.Pressed.Background" Color="#FFC4E5F6"/>
+        <SolidColorBrush x:Key="Button.Pressed.Border" Color="#FF2C628B"/>
+        <SolidColorBrush x:Key="Button.Disabled.Background" Color="#FFF4F4F4"/>
+        <SolidColorBrush x:Key="Button.Disabled.Border" Color="#FFADB2B5"/>
+        <SolidColorBrush x:Key="Button.Disabled.Foreground" Color="#FF838383"/>
+
+        <Style x:Key="DNDButton" TargetType="{x:Type Button}">
+            <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual1}"/>
+            <Setter Property="Background" Value="{x:Null}"/>
+            <Setter Property="BorderBrush" Value="{x:Null}"/>
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="true">
+                            <ContentPresenter x:Name="contentPresenter" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsDefaulted" Value="true">
+                                <Setter Property="BorderBrush" TargetName="border" Value="{x:Null}"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter Property="Background">
+                                    <Setter.Value>
+                                        <ImageBrush ImageSource="Images/D20MouseOver.PNG" />
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="true">
+                                <Setter Property="Background" TargetName="border" Value="{x:Null}"/>
+                                <Setter Property="BorderBrush" TargetName="border" Value="{x:Null}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Background" TargetName="border" Value="{x:Null}"/>
+                                <Setter Property="BorderBrush" TargetName="border" Value="{x:Null}"/>
+                                <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{StaticResource Button.Disabled.Foreground}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.Background>
+            <ImageBrush ImageSource="Images/Background.jpg" Opacity="0.8"/>
+        </Grid.Background>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <Rectangle HorizontalAlignment="Center" Height="161" Margin="0,-12,0,0" Grid.RowSpan="4" Grid.ColumnSpan="17" VerticalAlignment="Top" Width="1920" Grid.Column="0" Fill="#FF3F3F3F" />
+
+        <Button x:Name="Save" Grid.Row="2" Grid.Column="15" Margin="66,39,66,1" Content="Save" Foreground="White" FontSize="17" Click="Save_Click"  Grid.ColumnSpan="2" Grid.RowSpan="2" >
+            <Button.Background>
+                <ImageBrush ImageSource="Images/frameLong.png"/>
+            </Button.Background>
+        </Button>
+        <Button x:Name="Load"  Grid.Row="2" Grid.Column="14" Margin="66,39,66,39" Content="Load" Foreground="White" FontSize="17" Click="Load_Click" Grid.ColumnSpan="2" Grid.RowSpan="3" >
+            <Button.Background>
+                <ImageBrush ImageSource="Images/frameLong.png"/>
+            </Button.Background>
+        </Button>
+
+        <Border Grid.Row="0" Grid.Column="1" Grid.RowSpan="3" Margin="20" Background="#FFFEAA17">
+            <Image Margin="1" Source="Images/portrait.jpg" StretchDirection="DownOnly" Stretch="UniformToFill"/>
+        </Border>
+        <TextBox x:Name="Name" Text="{Binding CName, UpdateSourceTrigger=PropertyChanged}" Grid.Row="0" Grid.RowSpan="2" VerticalAlignment="Center" Margin="20,0,20,0" Grid.Column="2" Grid.ColumnSpan="2" Height="50" Background="{x:Null}" BorderBrush="#FFFEAA17" Foreground="White" SelectionBrush="{x:Null}" BorderThickness="3,3,3,3" FontWeight="Bold" FontSize="24" />
+        <TextBox x:Name="Info" Text="{Binding Info}" Grid.Row="1" Grid.RowSpan="2" VerticalAlignment="Center" Margin="20,0,20,0" Grid.Column="2" Grid.ColumnSpan="2" Height="25" Background="{x:Null}" BorderBrush="#FFFEAA17" Foreground="White" SelectionBrush="{x:Null}" BorderThickness="2,2,2,2" FontWeight="Bold" FontSize="12" />
+
+        <TextBlock x:Name="Strenght" Margin="75,5,75,5" Grid.Column="1" Grid.ColumnSpan="2" Grid.RowSpan="2"   Grid.Row="3" Foreground="White" FontSize="20" TextAlignment="Center" Padding="23">
+            <TextBlock.Background>
+                <ImageBrush ImageSource="Images/frame.png"/>
+            </TextBlock.Background></TextBlock>
+        <TextBlock x:Name="Dexterity"  Margin="75,5,75,5" Grid.Column="2" Grid.ColumnSpan="2" Grid.RowSpan="2"   Grid.Row="3" Foreground="White" FontSize="20" TextAlignment="Center" Padding="23">
+            <TextBlock.Background>
+                <ImageBrush ImageSource="Images/frame.png"/>
+            </TextBlock.Background></TextBlock>
+        <TextBlock x:Name="Constitution"  Margin="75,5,75,5" Grid.Column="3" Grid.ColumnSpan="2" Grid.RowSpan="2"   Grid.Row="3" Foreground="White" FontSize="20" TextAlignment="Center" Padding="23">
+            <TextBlock.Background>
+                <ImageBrush ImageSource="Images/frame.png"/>
+            </TextBlock.Background></TextBlock>
+        <TextBlock x:Name="Intelligence"  Margin="75,5,75,5" Grid.Column="4" Grid.ColumnSpan="2" Grid.RowSpan="2"   Grid.Row="3" Foreground="White" FontSize="20" TextAlignment="Center" Padding="23">
+            <TextBlock.Background>
+                <ImageBrush ImageSource="Images/frame.png"/>
+            </TextBlock.Background></TextBlock>
+        <TextBlock x:Name="Wisdom" Margin="75,5,75,5" Grid.Column="5" Grid.ColumnSpan="2" Grid.RowSpan="2"   Grid.Row="3" Foreground="White" FontSize="20" TextAlignment="Center" Padding="23">
+            <TextBlock.Background>
+                <ImageBrush ImageSource="Images/frame.png"/>
+            </TextBlock.Background></TextBlock>
+        <TextBlock x:Name="Charisma"  Margin="75,5,75,5" Grid.Column="6" Grid.ColumnSpan="2" Grid.RowSpan="2"   Grid.Row="3" Foreground="White" FontSize="20" TextAlignment="Center" Padding="23">
+            <TextBlock.Background>
+                <ImageBrush ImageSource="Images/frame.png"/>
+            </TextBlock.Background></TextBlock>
+
+        <Image Margin="80,10,80,10" Grid.Row="3" HorizontalAlignment="Center"  Source="Images/picturetopeople.org-7826eae482e3a2b4cda5cb2ebf10f106f7543c5b9f074f4826.png" MinWidth="30" MinHeight="10" Panel.ZIndex="1" Grid.Column="1" Grid.ColumnSpan="2" VerticalAlignment="Center" Stretch="Fill"/>
+        <Image Margin="80,10,80,10" Grid.Row="3" HorizontalAlignment="Center"   Source="Images/picturetopeople.org-d5b743e785a878a3b68847572b09f1a8ba5c9d7ae9a5c53d8b.png" MinWidth="30" MinHeight="10" Panel.ZIndex="1" Grid.Column="2" Grid.ColumnSpan="2" VerticalAlignment="Center" Stretch="Fill"/>
+        <Image Margin="80,10,80,10" Grid.Row="3" HorizontalAlignment="Center"   Source="Images/picturetopeople.org-f1462f3a804ecad04937bc5ed7005d8972e1ff2105b0d588a4.png" MinWidth="30" MinHeight="10" Panel.ZIndex="1" Grid.Column="3" Grid.ColumnSpan="2" VerticalAlignment="Center" Stretch="Fill"/>
+        <Image Margin="80,10,80,10" Grid.Row="3" HorizontalAlignment="Center"   Source="Images/picturetopeople.org-85bd9829988b0644f4adf4270e4ddcdd05127761cae7ec66ad.png" MinWidth="30" MinHeight="10" Panel.ZIndex="1" Grid.Column="4" Grid.ColumnSpan="2" VerticalAlignment="Center" Stretch="Fill"/>
+        <Image Margin="80,10,80,10" Grid.Row="3" HorizontalAlignment="Center"   Source="Images/picturetopeople.org-88582af15a4c9c45ff0d67170f16807840656cabc62d4d95ec.png" MinWidth="30" MinHeight="10" Panel.ZIndex="1" Grid.Column="5" Grid.ColumnSpan="2" VerticalAlignment="Center" Stretch="Fill"/>
+        <Image Margin="80,10,80,10" Grid.Row="3" HorizontalAlignment="Center"   Source="Images/picturetopeople.org-8d3340c71ea72dbfda7788d8fa02542a39dadef493342ae240.png" MinWidth="30" MinHeight="10" Panel.ZIndex="1" Grid.Column="6" Grid.ColumnSpan="2" VerticalAlignment="Center" Stretch="Fill"/>
+
+        <TextBox TextChanged="StrenghtInt_TextChanged" Text="{Binding Strength, UpdateSourceTrigger=PropertyChanged}" x:Name="StrenghtInt" Grid.Column="1" Grid.ColumnSpan="2" Grid.RowSpan="2" Margin="0,20,0,0" Grid.Row="3" TextWrapping="Wrap" VerticalAlignment="Bottom" FontSize="18" HorizontalAlignment="Center" Background="#FF091B2B" Foreground="White" SelectionBrush="#FFFFAB16" BorderBrush="#FFFFAB16" BorderThickness="0.5,0.5,0.5,0.5" SnapsToDevicePixels="True"/>
+        <TextBox TextChanged="DexterityInt_TextChanged" Text="{Binding Dexterity, UpdateSourceTrigger=PropertyChanged}" x:Name="DexterityInt"  Grid.Column="2" Grid.ColumnSpan="2" Grid.RowSpan="2" Margin="0,20,0,0" Grid.Row="3" TextWrapping="Wrap" VerticalAlignment="Bottom" FontSize="18" HorizontalAlignment="Center" Background="#FF091B2B" Foreground="White" SelectionBrush="#FFFFAB16" BorderBrush="#FFFFAB16" BorderThickness="0.5,0.5,0.5,0.5" SnapsToDevicePixels="True" />
+        <TextBox TextChanged="ConstitutionInt_TextChanged" Text="{Binding Constitution, UpdateSourceTrigger=PropertyChanged}" x:Name="ConstitutionInt" Grid.Column="3" Grid.ColumnSpan="2" Grid.RowSpan="2" Margin="0,20,0,0" Grid.Row="3" TextWrapping="Wrap" VerticalAlignment="Bottom" FontSize="18" HorizontalAlignment="Center" Background="#FF091B2B" Foreground="White" SelectionBrush="#FFFFAB16" BorderBrush="#FFFFAB16" BorderThickness="0.5,0.5,0.5,0.5" SnapsToDevicePixels="True" />
+        <TextBox TextChanged="IntelligenceInt_TextChanged" Text="{Binding Intelligence, UpdateSourceTrigger=PropertyChanged}" x:Name="IntelligenceInt" Grid.Column="4" Grid.ColumnSpan="2" Grid.RowSpan="2" Margin="0,20,0,0" Grid.Row="3" TextWrapping="Wrap" VerticalAlignment="Bottom" FontSize="18" HorizontalAlignment="Center" Background="#FF091B2B" Foreground="White" SelectionBrush="#FFFFAB16" BorderBrush="#FFFFAB16" BorderThickness="0.5,0.5,0.5,0.5" SnapsToDevicePixels="True" />
+        <TextBox TextChanged="WisdomInt_TextChanged" Text="{Binding Wisdom, UpdateSourceTrigger=PropertyChanged}" x:Name="WisdomInt" Grid.Column="5" Grid.ColumnSpan="2" Grid.RowSpan="2" Margin="0,20,0,0" Grid.Row="3" TextWrapping="Wrap" VerticalAlignment="Bottom" FontSize="18" HorizontalAlignment="Center" Background="#FF091B2B" Foreground="White" SelectionBrush="#FFFFAB16" BorderBrush="#FFFFAB16" BorderThickness="0.5,0.5,0.5,0.5" SnapsToDevicePixels="True" />
+        <TextBox TextChanged="CharismaInt_TextChanged" Text="{Binding Charisma, UpdateSourceTrigger=PropertyChanged}" x:Name="CharismaInt" Grid.Column="6" Grid.ColumnSpan="2" Grid.RowSpan="2" Margin="0,20,0,0" Grid.Row="3" TextWrapping="Wrap" VerticalAlignment="Bottom" FontSize="18" HorizontalAlignment="Center" Background="#FF091B2B" Foreground="White" SelectionBrush="#FFFFAB16" BorderBrush="#FFFFAB16" BorderThickness="0.5,0.5,0.5,0.5" SnapsToDevicePixels="True" />
+
+        <Border Grid.Column="1" Grid.Row="6" Grid.ColumnSpan="4" Grid.RowSpan="6" Margin="80,0,80,0">
+            <Image Grid.Column="1" Grid.Row="6" Grid.ColumnSpan="4" Grid.RowSpan="5" Source="Images/frame.png" Stretch="Fill" />
+        </Border>
+        <Border Grid.Column="1" Grid.Row="6" Grid.ColumnSpan="4" Grid.RowSpan="6" Margin="80,0,80,0">
+            <Image Grid.Column="1" Grid.Row="6" Grid.ColumnSpan="4" Grid.RowSpan="5"  Stretch="Fill" Source="Images/SavingThrows.png" Height="20" Margin="26,187,26,24" />
+        </Border>
+
+        <TextBlock x:Name="Stre" Text="  STR" Grid.Column="1" Grid.Row="6" Grid.ColumnSpan="2" Grid.RowSpan="2" Margin="110,30,30,25" Foreground="White" FontSize="17">
+            <TextBlock.Background>
+                <ImageBrush ImageSource="Images/frameLong.png" Stretch="Fill"/>
+            </TextBlock.Background>
+        </TextBlock>
+        <TextBlock x:Name="Dext" Text="  DEX" Grid.Column="1" Grid.Row="7" Grid.ColumnSpan="2" Grid.RowSpan="2" Margin="110,30,30,0" Foreground="White" FontSize="17" Height="24" VerticalAlignment="Top">
+            <TextBlock.Background>
+                <ImageBrush ImageSource="Images/frameLong.png" Stretch="Fill"/>
+            </TextBlock.Background>
+        </TextBlock>
+        <TextBlock x:Name="Cons" Text="  CON" Grid.Column="1" Grid.Row="8" Grid.ColumnSpan="2" Grid.RowSpan="2" Margin="110,30,30,25" Foreground="White" FontSize="17">
+            <TextBlock.Background>
+                <ImageBrush ImageSource="Images/frameLong.png" Stretch="Fill" />
+            </TextBlock.Background>
+        </TextBlock>
+        <TextBlock x:Name="Inte" Text="  INT" Grid.Column="3" Grid.Row="6" Grid.ColumnSpan="2" Grid.RowSpan="2" Margin="30,30,110,25" Foreground="White" FontSize="17">
+            <TextBlock.Background>
+                <ImageBrush ImageSource="Images/frameLong.png" Stretch="Fill"/>
+            </TextBlock.Background>
+        </TextBlock>
+        <TextBlock x:Name="Wisd" Text="  WIS" Grid.Column="3" Grid.Row="7" Grid.ColumnSpan="2" Grid.RowSpan="2" Margin="30,30,110,25" Foreground="White" FontSize="17">
+            <TextBlock.Background>
+                <ImageBrush ImageSource="Images/frameLong.png" Stretch="Fill" />
+            </TextBlock.Background>
+        </TextBlock>
+        <TextBlock x:Name="Char" Text="  CHA" Grid.Column="3" Grid.Row="8" Grid.ColumnSpan="2" Grid.RowSpan="2" Margin="30,30,110,25" Foreground="White" FontSize="17">
+            <TextBlock.Background>
+                <ImageBrush ImageSource="Images/frameLong.png" Stretch="Fill" >
+                </ImageBrush>
+            </TextBlock.Background>
+        </TextBlock>
+
+        <TextBox x:Name="Proficency" Text="{Binding Proficiency}" TextChanged="Proficency_TextChanged" Grid.Column="8" Grid.ColumnSpan="2" Grid.Row="3" Grid.RowSpan="3" Margin="50,10,50,10" Foreground="White" FontSize="24" TextAlignment="Center" Padding="29" BorderBrush="{x:Null}">
+            <TextBox.Background>
+                <ImageBrush ImageSource="Images/frame.png"/>
+            </TextBox.Background>
+        </TextBox>
+        <TextBlock Text="Proficiency" Grid.Column="8" Grid.ColumnSpan="2" Grid.Row="5" Margin="50,0,50,10" Foreground="White" FontSize="20" TextAlignment="Center"/>
+
+        <TextBox x:Name="Speed" Text="{Binding Speed}" Grid.Column="9" Grid.ColumnSpan="2" Grid.Row="3" Grid.RowSpan="3" Margin="80,10,20,10" Foreground="White" FontSize="24" TextAlignment="Center" Padding="29" BorderBrush="{x:Null}" >
+            <TextBox.Background>
+                <ImageBrush ImageSource="Images/frame.png"/>
+            </TextBox.Background>
+        </TextBox>
+        <TextBlock Text="Speed" Grid.Column="9" Grid.ColumnSpan="2" Grid.Row="5" Margin="80,0,20,10" Foreground="White" FontSize="20" TextAlignment="Center"/>
+
+        <TextBlock x:Name="Initiativ" Text="Initiativ" Grid.Column="8" Grid.ColumnSpan="2" Grid.Row="8"  Foreground="#FF061A2A" FontSize="24" TextAlignment="Center" Padding="5" FontWeight="Bold"/>
+        <TextBox x:Name="InitiativInt" Text="{Binding Initiativ}" Grid.Column="8" Grid.ColumnSpan="2" Grid.Row="6" Grid.RowSpan="3" Margin="50,10,50,30" Foreground="White" FontSize="24" TextAlignment="Center" Padding="20" BorderBrush="{x:Null}" >
+            <TextBox.Background>
+                <ImageBrush ImageSource="Images/framelong.png"/>
+            </TextBox.Background>
+        </TextBox>
+
+        <TextBox x:Name="ArmorClass" Text="{Binding ArmorClass}" Grid.Column="9" Grid.ColumnSpan="2" Grid.Row="6" Grid.RowSpan="3" Margin="92,10,27,30" Foreground="White" FontSize="20" TextAlignment="Center" Padding="25" BorderBrush="{x:Null}">
+            <TextBox.Background>
+                <ImageBrush ImageSource="Images/ArmorClass.png"/>
+            </TextBox.Background>
+        </TextBox>
+        <TextBlock Text="ArmorClass" Grid.Column="9" Grid.ColumnSpan="2" Grid.Row="8" Margin="70,0,10,0" Foreground="#FF061A2A" FontSize="24" TextAlignment="Center" Padding="5" FontWeight="Bold"/>
+
+        <Button x:Name="btnStr" Grid.Column="1" Grid.Row="6" Grid.ColumnSpan="2" Grid.RowSpan="2" Margin="170,30,30,25" BorderBrush="#FFFEAA17" Background="{x:Null}" Foreground="White" BorderThickness="1.5,1.5,1.5,1.5" FontSize="10" Click="btnSkill_Click"/>
+        <Button x:Name="btnDex" Grid.Column="1" Grid.Row="7" Grid.ColumnSpan="2" Grid.RowSpan="2" Margin="170,30,30,25" BorderBrush="#FFFEAA17" Background="{x:Null}" Foreground="White" BorderThickness="1.5,1.5,1.5,1.5" FontSize="10" Click="btnSkill_Click" />
+        <Button x:Name="btnCon" Grid.Column="1" Grid.Row="8" Grid.ColumnSpan="2" Grid.RowSpan="2" Margin="170,30,30,25" BorderBrush="#FFFEAA17" Background="{x:Null}" Foreground="White" BorderThickness="1.5,1.5,1.5,1.5" FontSize="10" Click="btnSkill_Click" />
+        <Button x:Name="btnIntel" Grid.Column="3" Grid.Row="6" Grid.ColumnSpan="2" Grid.RowSpan="2" Margin="90,30,110,25" BorderBrush="#FFFEAA17" Background="{x:Null}" Foreground="White" BorderThickness="1.5,1.5,1.5,1.5" FontSize="10" Click="btnSkill_Click"/>
+        <Button x:Name="btnWis" Grid.Column="3" Grid.Row="7" Grid.ColumnSpan="2" Grid.RowSpan="2" Margin="90,30,110,25" BorderBrush="#FFFEAA17" Background="{x:Null}" Foreground="White" BorderThickness="1.5,1.5,1.5,1.5" FontSize="10" Click="btnSkill_Click" />
+        <Button x:Name="btnCha" Grid.Column="3" Grid.Row="8" Grid.ColumnSpan="2" Grid.RowSpan="2" Margin="90,30,110,25" BorderBrush="#FFFEAA17" Background="{x:Null}" Foreground="White" BorderThickness="1.5,1.5,1.5,1.5" FontSize="10" Click="btnSkill_Click" />
+
+        <CheckBox IsChecked="{Binding STRSavingThrow}" x:Name="streProf" Margin="0,5,0,0" Grid.Column="1" Grid.Row="6" Grid.RowSpan="2" VerticalAlignment="Center"  BorderBrush="#FFFEAA17" ClickMode="Release" Foreground="White" HorizontalAlignment="Right" />
+        <CheckBox IsChecked="{Binding DEXSavingThrow}" x:Name="dextProf" Margin="0,5,0,0" Grid.Column="1" Grid.Row="7" Grid.RowSpan="2" VerticalAlignment="Center"  BorderBrush="#FFFEAA17" ClickMode="Release" Foreground="White" HorizontalAlignment="Right" />
+        <CheckBox IsChecked="{Binding CONSavingThrow}" x:Name="constProf" Margin="0,5,0,0" Grid.Column="1" Grid.Row="8" Grid.RowSpan="2" VerticalAlignment="Center"  BorderBrush="#FFFEAA17" ClickMode="Release" Foreground="White" HorizontalAlignment="Right" />
+        <CheckBox IsChecked="{Binding INTSavingThrow}" x:Name="inteProf" Margin="17,5,0,0" Grid.Column="3" Grid.Row="6" Grid.RowSpan="2" VerticalAlignment="Center"  BorderBrush="#FFFEAA17" ClickMode="Release" Foreground="White" HorizontalAlignment="Left" />
+        <CheckBox IsChecked="{Binding WISSavingThrow}" x:Name="wisdProf" Margin="17,5,0,0" Grid.Column="3" Grid.Row="7" Grid.RowSpan="2" VerticalAlignment="Center"  BorderBrush="#FFFEAA17" ClickMode="Release" Foreground="White" HorizontalAlignment="Left" />
+        <CheckBox IsChecked="{Binding CHASavingThrow}" x:Name="charProf" Margin="17,5,0,0" Grid.Column="3" Grid.Row="8" Grid.RowSpan="2" VerticalAlignment="Center"  BorderBrush="#FFFEAA17" ClickMode="Release" Foreground="White" HorizontalAlignment="Left" />
+
+        <TextBox x:Name="SavThrAdvantage" Text="{Binding Advantages}" Grid.Row="9" Grid.Column="1" Grid.ColumnSpan="4" Margin="100,0,100,10" Foreground="White" Height="29" Grid.RowSpan="2" VerticalAlignment="Bottom" Background="{x:Null}" BorderBrush="{x:Null}"/>
+
+        <Border Grid.Column="1" Grid.Row="13" Grid.ColumnSpan="4" Grid.RowSpan="6" Margin="80,0,80,0">
+            <Image Source="Images/frame.png" Stretch="Fill" />
+        </Border>
+        <Border Grid.Column="1" Grid.Row="13" Grid.ColumnSpan="4" Grid.RowSpan="6" Margin="80,0,80,0">
+            <Image Grid.RowSpan="5"  Stretch="Fill" Source="Images/Senses.png" Height="20" Width="120" Margin="71,187,71,24" />
+        </Border>
+
+        <TextBlock x:Name="PassWis" Text="    Passive Wis (Perception)" Grid.Column="1" Grid.Row="13" Grid.ColumnSpan="3" Grid.RowSpan="2" Margin="110,30,30,25" Foreground="White" FontSize="15" TextAlignment="Left" >
+            <TextBlock.Background>
+                <ImageBrush Stretch="Fill" ImageSource="Images/frameLong.png"/>
+            </TextBlock.Background>
+        </TextBlock>
+        <TextBlock x:Name="PassInt" Text="    Passive Int (Investigation)" Grid.Column="1" Grid.Row="14" Grid.ColumnSpan="3" Grid.RowSpan="2" Margin="110,30,30,25" Foreground="White" FontSize="15" TextAlignment="Left" >
+            <TextBlock.Background>
+                <ImageBrush Stretch="Fill" ImageSource="Images/frameLong.png"/>
+            </TextBlock.Background>
+        </TextBlock>
+        <TextBlock x:Name="PassWis2" Text="    Passive Wis (Insight)" Grid.Column="1" Grid.Row="15" Grid.ColumnSpan="3" Grid.RowSpan="2" Margin="110,30,30,25" Foreground="White" FontSize="15" TextAlignment="Left" >
+            <TextBlock.Background>
+                <ImageBrush Stretch="Fill" ImageSource="Images/frameLong.png"/>
+            </TextBlock.Background>
+        </TextBlock>
+
+        <TextBlock x:Name="PassWisInt" Text="0" Grid.Column="1" Grid.Row="13" Grid.ColumnSpan="2" Grid.RowSpan="2" Margin="100,30,100,25" Foreground="White" FontSize="15" TextAlignment="Center" >
+            <TextBlock.Background>
+                <ImageBrush Stretch="Fill" ImageSource="Images/frameLong.png"/>
+            </TextBlock.Background>
+        </TextBlock>
+        <TextBlock x:Name="PassIntInt" Text="0" Grid.Column="1" Grid.Row="14" Grid.ColumnSpan="2" Grid.RowSpan="2" Margin="100,30,100,25" Foreground="White" FontSize="15" TextAlignment="Center" >
+            <TextBlock.Background>
+                <ImageBrush Stretch="Fill" ImageSource="Images/frameLong.png"/>
+            </TextBlock.Background>
+        </TextBlock>
+        <TextBlock x:Name="PassWis2Int" Text="0" Grid.Column="1" Grid.Row="15" Grid.ColumnSpan="2" Grid.RowSpan="2" Margin="100,30,100,25" Foreground="White" FontSize="15" TextAlignment="Center" >
+            <TextBlock.Background>
+                <ImageBrush Stretch="Fill" ImageSource="Images/frameLong.png"/>
+            </TextBlock.Background>
+        </TextBlock>
+
+        <TextBlock x:Name="SensesText" Text="Darkvision 60 ft." Grid.Row="17" Grid.Column="1" Grid.ColumnSpan="4" Margin="100,0,100,10" Foreground="White" TextAlignment="Center"/>
+
+        <Border Grid.Column="1" Grid.Row="20" Grid.ColumnSpan="4" Grid.RowSpan="6" Margin="80,0,80,0">
+            <Image Source="Images/frame.png" Stretch="Fill" />
+        </Border>
+        <Border Grid.Column="1" Grid.Row="20" Grid.ColumnSpan="4" Grid.RowSpan="6" Margin="80,0,80,0">
+            <Image Grid.RowSpan="5"  Stretch="Fill" Source="Images/PROFICIENCIES-LANGUAGES.png" Height="20" Margin="26,187,26,24" />
+        </Border>
+
+        <TextBlock Text="Armor" Foreground="White" FontSize="15" Grid.Column="1" Grid.Row="20" Grid.ColumnSpan="4" Margin="110,20,110,0"/>
+        <TextBlock Text="Weapons" Foreground="White" FontSize="15" Grid.Column="1" Grid.Row="21" Grid.ColumnSpan="4" Margin="110,20,110,0"/>
+        <TextBlock Text="Tools" Foreground="White" FontSize="15" Grid.Column="1" Grid.Row="22" Grid.ColumnSpan="4" Margin="110,20,110,0"/>
+        <TextBlock Text="Languages" Foreground="White" FontSize="15" Grid.Column="1" Grid.Row="23" Grid.ColumnSpan="4" Margin="110,20,110,0"/>
+
+        <TextBox x:Name="ArmorProf" Text="{Binding ArmorPro}"  Foreground="White" BorderBrush="#FFF5A51A" Grid.Column="1" Grid.Row="21" Grid.ColumnSpan="4" Margin="110,0,110,20" Background="{x:Null}" BorderThickness="0,0,0,1" ClipToBounds="True"  TextWrapping="WrapWithOverflow"/>
+        <TextBox x:Name="WeaponsProf" Text="{Binding WeaponsPro}" Foreground="White" BorderBrush="#FFF5A51A" Grid.Column="1" Grid.Row="22" Grid.ColumnSpan="4" Margin="110,0,110,20" Background="{x:Null}" BorderThickness="0,0,0,1" ClipToBounds="True" TextWrapping="WrapWithOverflow"/>
+        <TextBox x:Name="ToolsProf" Text="{Binding ToolsPro}" Foreground="White" BorderBrush="#FFF5A51A" Grid.Column="1" Grid.Row="23" Grid.ColumnSpan="4" Margin="110,0,110,20" Background="{x:Null}" BorderThickness="0,0,0,1" ClipToBounds="True" TextWrapping="WrapWithOverflow"/>
+        <TextBox x:Name="LanguagesProf" Text="{Binding LanguagesPro}" Foreground="White" BorderBrush="#FFF5A51A" Grid.Column="1" Grid.Row="24" Grid.ColumnSpan="4" Margin="110,0,110,20" Background="{x:Null}" BorderThickness="0,0,0,1" ClipToBounds="True" TextWrapping="WrapWithOverflow"/>
+
+        <Border Grid.Column="4" Grid.Row="6" Grid.ColumnSpan="4" Grid.RowSpan="20" Margin="80,0,80,0">
+            <Image Grid.Column="1" Grid.Row="6" Grid.ColumnSpan="4" Grid.RowSpan="5" Source="Images/Skills.png" Stretch="Fill" />
+        </Border>
+        <CheckBox IsChecked="{Binding Acrobatics}" x:Name="ckbxAcr" Grid.Column="5" Grid.Row="7" VerticalAlignment="Center"  BorderBrush="#FFFEAA17" ClickMode="Release" Foreground="White"  Margin="0,7,0,0"/>
+        <CheckBox IsChecked="{Binding AnimalHandling}" x:Name="ckbxAni" Grid.Column="5" Grid.Row="8" VerticalAlignment="Center"  BorderBrush="#FFFEAA17" ClickMode="Release" Foreground="White"  Margin="0,0,0,5"/>
+        <CheckBox IsChecked="{Binding Arcana}" x:Name="ckbxArc" Grid.Column="5" Grid.Row="9" VerticalAlignment="Center"  BorderBrush="#FFFEAA17" ClickMode="Release" Foreground="White"  Margin="0,0,0,17"/>
+        <CheckBox IsChecked="{Binding Athletics}" x:Name="ckbxAth" Grid.Column="5" Grid.Row="9" VerticalAlignment="Top"     BorderBrush="#FFFEAA17" ClickMode="Release" Foreground="White"  Margin="0,37,113,0" Grid.ColumnSpan="2" Grid.RowSpan="2"/>
+        <CheckBox IsChecked="{Binding Deception}" x:Name="ckbxDec" Grid.Column="5" Grid.Row="10" VerticalAlignment="Center" BorderBrush="#FFFEAA17" ClickMode="Release" Foreground="White"   Margin="0,0,0,0" Grid.RowSpan="2"/>
+        <CheckBox IsChecked="{Binding History}" x:Name="ckbxHis" Grid.Column="5" Grid.Row="11" VerticalAlignment="Top"   BorderBrush="#FFFEAA17" ClickMode="Release" Foreground="White"  Margin="0,25,113,0" Grid.ColumnSpan="2" Grid.RowSpan="2"/>
+        <CheckBox IsChecked="{Binding Insight}" x:Name="ckbxIns" Grid.Column="5" Grid.Row="12" VerticalAlignment="Center"  BorderBrush="#FFFEAA17" ClickMode="Release" Foreground="White"   Margin="0,15,0,0"/>
+        <CheckBox IsChecked="{Binding Intimidation}" x:Name="ckbxInt" Grid.Column="5" Grid.Row="13" VerticalAlignment="Center"  BorderBrush="#FFFEAA17" ClickMode="Release" Foreground="White"  Margin="0,3,0,0"/>
+        <CheckBox IsChecked="{Binding Investigation}" x:Name="ckbxInv" Grid.Column="5" Grid.Row="14" VerticalAlignment="Center"  BorderBrush="#FFFEAA17" ClickMode="Release" Foreground="White"   Margin="0,0,0,9"/>
+        <CheckBox IsChecked="{Binding Medicine}" x:Name="ckbxMed" Grid.Column="5" Grid.Row="15" VerticalAlignment="Center"  BorderBrush="#FFFEAA17" ClickMode="Release" Foreground="White"   Margin="0,0,0,21"/>
+        <CheckBox IsChecked="{Binding Nature}" x:Name="ckbxNat" Grid.Column="5" Grid.Row="15" VerticalAlignment="Top"    BorderBrush="#FFFEAA17" ClickMode="Release" Foreground="White"   Grid.ColumnSpan="2" Margin="0,35,113,0" Grid.RowSpan="2"/>
+        <CheckBox IsChecked="{Binding Perception}" x:Name="ckbxPerc" Grid.Column="5" Grid.Row="16" VerticalAlignment="Top"   BorderBrush="#FFFEAA17" ClickMode="Release" Foreground="White"   Grid.ColumnSpan="2" Margin="0,29,113,0" Grid.RowSpan="2"/>
+        <CheckBox IsChecked="{Binding Performance}" x:Name="ckbxPerf" Grid.Column="5" Grid.Row="17" VerticalAlignment="Top"   BorderBrush="#FFFEAA17" ClickMode="Release" Foreground="White"   Grid.ColumnSpan="2" Margin="0,24,113,0"/>
+        <CheckBox IsChecked="{Binding Persuasion}" x:Name="ckbxPers" Grid.Column="5" Grid.Row="18" VerticalAlignment="Top"   BorderBrush="#FFFEAA17" ClickMode="Release" Foreground="White"   Grid.ColumnSpan="2" Margin="0,18,113,0"/>
+        <CheckBox IsChecked="{Binding Religion}" x:Name="ckbxRel" Grid.Column="5" Grid.Row="19" VerticalAlignment="Center"  BorderBrush="#FFFEAA17" ClickMode="Release" Foreground="White"   Grid.ColumnSpan="2" Margin="0,0,113,0"/>
+        <CheckBox IsChecked="{Binding SleightOfHand}" x:Name="ckbxSle" Grid.Column="5" Grid.Row="20" VerticalAlignment="Top"    BorderBrush="#FFFEAA17" ClickMode="Release" Foreground="White"   Grid.ColumnSpan="2" Margin="0,6,113,0"/>
+        <CheckBox IsChecked="{Binding Survival}" x:Name="ckbxSur" Grid.Column="5" Grid.Row="21" VerticalAlignment="Top"    BorderBrush="#FFFEAA17" ClickMode="Release" Foreground="White"  Grid.ColumnSpan="2" Margin="0,33,113,0" Grid.RowSpan="2"/>
+        <CheckBox IsChecked="{Binding Stealth}" x:Name="ckbxSte" Grid.Column="5" Grid.Row="21" VerticalAlignment="Top"    BorderBrush="#FFFEAA17" ClickMode="Release" Foreground="White"   Grid.ColumnSpan="2" Margin="0,0,113,0"/>
+
+        <Image Grid.Column="5" Grid.Row="23" Grid.ColumnSpan="2" Source="Images/AddSkill.png" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="40,0,40,0" />
+        <Image Grid.Column="5" Grid.Row="24" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="40,10,40,0" Source="Images/SKILL.png" Height="20"/>
+
+        <Button x:Name="btnAcr" Grid.Column="6" Grid.Row="7" VerticalAlignment="Top" HorizontalAlignment="Right" Grid.ColumnSpan="2" Height="20" Margin="0,12,113,0" Width="35" Click="btnSkill_Click"/>
+        <Button x:Name="btnANHA" Grid.Column="6" Grid.Row="8" VerticalAlignment="Top" HorizontalAlignment="Right" Grid.ColumnSpan="2" Height="20" Margin="0,5,113,0" Width="35"  Click="btnSkill_Click"/>
+        <Button x:Name="btnArca"  Grid.Column="6" Grid.Row="8" VerticalAlignment="Top" HorizontalAlignment="Right" Grid.ColumnSpan="2" Height="20" Margin="0,39,113,0" Width="35" Grid.RowSpan="2" Click="btnSkill_Click"/>
+        <Button x:Name="btnAthle" Grid.Column="6" Grid.Row="9" VerticalAlignment="Top" HorizontalAlignment="Right" Grid.ColumnSpan="2" Height="20" Margin="0,34,113,0" Width="35" Grid.RowSpan="2" Click="btnSkill_Click"/>
+        <Button x:Name="btnDece"  Grid.Column="6" Grid.Row="10" VerticalAlignment="Top" HorizontalAlignment="Right" Grid.ColumnSpan="2" Height="20" Margin="0,27,113,0" Grid.RowSpan="2" Width="35" Click="btnSkill_Click"/>
+        <Button x:Name="btnHist"  Grid.Column="6" Grid.Row="11" VerticalAlignment="Top" HorizontalAlignment="Right" Grid.ColumnSpan="2" Height="20" Margin="0,21,113,0" Width="35" Grid.RowSpan="2" Click="btnSkill_Click"/>
+        <Button x:Name="btnIns"   Grid.Column="6" Grid.Row="12" VerticalAlignment="Top" HorizontalAlignment="Right" Grid.ColumnSpan="2" Margin="0,15,113,0" Height="20" Width="35" Click="btnSkill_Click"/>
+        <Button x:Name="btnInti"  Grid.Column="6" Grid.Row="13" VerticalAlignment="Top" HorizontalAlignment="Right" Grid.ColumnSpan="2" Height="20" Margin="0,9,113,0" Width="35" Click="btnSkill_Click"/>
+        <Button x:Name="btnInv"   Grid.Column="6" Grid.Row="14" VerticalAlignment="Top" HorizontalAlignment="Right" Grid.ColumnSpan="2" Height="20" Margin="0,2,113,0" Width="35" Click="btnSkill_Click"/>
+        <Button x:Name="btnMed"   Grid.Column="6" Grid.Row="14" VerticalAlignment="Top" HorizontalAlignment="Right" Grid.ColumnSpan="2" Height="20" Margin="0,36,113,0" Grid.RowSpan="2" Width="35" Click="btnSkill_Click"/>
+        <Button x:Name="btnNat"   Grid.Column="6" Grid.Row="15" VerticalAlignment="Center" HorizontalAlignment="Right" Grid.ColumnSpan="2" Height="20" Margin="0,0,113,0" Width="35" Grid.RowSpan="2" Click="btnSkill_Click"/>
+        <Button x:Name="btnPerc"  Grid.Column="6" Grid.Row="16" VerticalAlignment="Top" HorizontalAlignment="Right" Grid.ColumnSpan="2" Height="20" Margin="0,24,113,0" Grid.RowSpan="2" Width="35" Click="btnSkill_Click"/>
+        <Button x:Name="btnPerf"  Grid.Column="6" Grid.Row="17" VerticalAlignment="Top" HorizontalAlignment="Right" Grid.ColumnSpan="2" Height="20" Margin="0,17,113,0" Width="35" Click="btnSkill_Click"/>
+        <Button x:Name="btnPers"  Grid.Column="6" Grid.Row="18" VerticalAlignment="Top" HorizontalAlignment="Right" Grid.ColumnSpan="2" Height="20" Margin="0,13,113,0" Width="35" Click="btnSkill_Click"/>
+        <Button x:Name="btnRel"   Grid.Column="6" Grid.Row="19" VerticalAlignment="Top" HorizontalAlignment="Right" Grid.ColumnSpan="2" Height="20" Margin="0,7,113,0" Width="35" Click="btnSkill_Click"/>
+        <Button x:Name="btnSleiOHan" Grid.Column="6" Grid.Row="20" VerticalAlignment="Top" HorizontalAlignment="Right" Grid.ColumnSpan="2" Height="20" Margin="0,1,113,0" Width="35" Click="btnSkill_Click"/>
+        <Button x:Name="btnStea" Grid.Column="6" Grid.Row="20" VerticalAlignment="Top" HorizontalAlignment="Right" Grid.ColumnSpan="2" Height="20" Margin="0,35,113,0" Width="35" Grid.RowSpan="2" Click="btnSkill_Click"/>
+        <Button x:Name="btnSur" Grid.Column="6" Grid.Row="21" VerticalAlignment="Top" HorizontalAlignment="Right" Grid.ColumnSpan="2" Height="20" Margin="0,28,113,0" Width="35" Grid.RowSpan="2" Click="btnSkill_Click"/>
+
+        <Image Grid.Column="8" Grid.Row="10" Grid.ColumnSpan="5" Grid.RowSpan="15" Source="Images/frame.png" />
+
+        <TabControl Style="{DynamicResource TabControlNewStyle}" Grid.Column="8" Grid.Row="11" Grid.ColumnSpan="5" Grid.RowSpan="14" Margin="50,25,50,65" BorderBrush="#FF061A2A" Foreground="#FF061A2A">
+            <TabItem Style="{DynamicResource TabItemNewStyle}" Header="Actions" BorderBrush="#FF061A2A" Foreground="White" Background="#FF061A2A" Grid.RowSpan="2" Grid.ColumnSpan="2" Height="50" Width="110" FontSize="20" FontWeight="Bold" ScrollViewer.CanContentScroll="True">
+                <Grid ScrollViewer.CanContentScroll="True" Background="#FF061A2A" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="49*" />
+                        <ColumnDefinition Width="49*" />
+                        <ColumnDefinition Width="69*" />
+                        <ColumnDefinition Width="69*"/>
+                        <ColumnDefinition Width="44*"/>
+                        <ColumnDefinition Width="68.663"/>
+                        <ColumnDefinition Width="69*"/>
+                        <ColumnDefinition Width="44*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <TextBlock TextAlignment="Center" Grid.ColumnSpan="2" Margin="0,15,0,58" Text="New Attack:" Grid.RowSpan="2" FontSize="18"/>
+                    <TextBox x:Name="AttackName" Grid.Column="2" Margin="10,20,10,10" TextWrapping="WrapWithOverflow" FontSize="12"/>
+                    <TextBox x:Name="AttackRange" Grid.Column="3" Margin="10,20,10,10" TextWrapping="WrapWithOverflow" FontSize="12"/>
+                    <TextBox x:Name="AttackHit" Grid.Column="4" Margin="10,20,10,10" TextWrapping="WrapWithOverflow" FontSize="12"/>
+                    <TextBox x:Name="AttackDamage" Grid.Column="5" Margin="10,20,10,10" TextWrapping="WrapWithOverflow" FontSize="12"/>
+                    <TextBox x:Name="AttackNotes" Grid.Column="6" Margin="10,20,10,10" TextWrapping="WrapWithOverflow" FontSize="12"/>
+                    <TextBlock Grid.Column="2" FontSize="12" Margin="10,0,0,40" Text="Name"/>
+                    <TextBlock Grid.Column="3" FontSize="12" Margin="10,0,0,40" Text="Range"/>
+                    <TextBlock Grid.Column="4" FontSize="12" Margin="10,0,0,40" Text="Hit"/>
+                    <TextBlock Grid.Column="5" FontSize="12" Margin="10,0,0,40" Text="Damage"/>
+                    <TextBlock Grid.Column="6" FontSize="12" Margin="10,0,0,40" Text="Notes"/>
+                    <Button x:Name="AttackAdd" Grid.Column="7" Margin="5,20,5,10" Background="White" Content="ADD" FontSize="14" Click="Attack_Add"/>
+
+                    <ScrollViewer Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="8" Grid.RowSpan="2" >
+                        <TextBlock x:Name="AttackList" Text="{Binding AllAttacks, UpdateSourceTrigger=PropertyChanged}" Background="White" Foreground="Black" FontSize="14" TextWrapping="WrapWithOverflow"/>
+                    </ScrollViewer>
+                    <ScrollViewer Grid.Row="3" Grid.RowSpan="2" Grid.ColumnSpan="8">
+                        <TextBox x:Name="Extras" Text="{Binding AttackExtras}" FontSize="14" TextWrapping="WrapWithOverflow" AcceptsReturn="True"/>
+                    </ScrollViewer>
+
+                    <TextBlock Grid.Row="5" Grid.RowSpan="2" Grid.ColumnSpan="2" Margin="0,30" Text="Remove:" HorizontalAlignment="Right"/>
+                    <TextBlock Grid.Row="6" Grid.RowSpan="2" Grid.ColumnSpan="2" Text="Edit:" HorizontalAlignment="Right"/>
+                    <TextBox x:Name="AttackIndex" Grid.Row="5" Grid.RowSpan="2" Grid.Column="2" Margin="35,31,45,29" Grid.ColumnSpan="2"/>
+                    <TextBlock Text="Number"  Grid.Row="5" Grid.RowSpan="2" Grid.Column="2" FontSize="12" Margin="35,10,45,90" Grid.ColumnSpan="2"/>
+
+                    <Button x:Name="AttEdit" Grid.Column="4" Grid.ColumnSpan="2" Margin="30" Grid.RowSpan="2" Grid.Row="5" Content="Edit" Background="White" Click="Attack_Edit"/>
+                    <Button x:Name="AttRemove" Grid.Column="6" Grid.ColumnSpan="2" Margin="0,30,30,30" Grid.RowSpan="2" Grid.Row="5" Content="Remove" Background="White" Click="Attack_Remove"/>
+
+                    <TextBlock x:Name="EditAttack" Visibility="Hidden" HorizontalAlignment="Left" Margin="0,45,0,0" TextWrapping="Wrap" Text="Edit Attack" VerticalAlignment="Top" Grid.ColumnSpan="8" Grid.RowSpan="6" Background="#FFC3C3C3" FontSize="30" TextAlignment="Center" Height="300" Width="461" Panel.ZIndex="4"/>
+                    <TextBox Visibility="Hidden" x:Name="EditATTName" Grid.Row="2" Grid.ColumnSpan="3" Panel.ZIndex="5" Margin="10"/>
+                    <TextBox Visibility="Hidden" x:Name="EditATTRange" Grid.Row="2" Grid.ColumnSpan="3" Panel.ZIndex="5" Margin="10,10,25,10" Grid.Column="3"/>
+                    <TextBox Visibility="Hidden" x:Name="EditHit" Grid.Row="2" Grid.ColumnSpan="2" Panel.ZIndex="5" Margin="10" Grid.Column="6"/>
+                    <TextBox Visibility="Hidden" x:Name="EditATTDamage" Grid.Row="3" Grid.ColumnSpan="3" Panel.ZIndex="5" Margin="10,34,10,39" Grid.RowSpan="2"/>
+                    <TextBox Visibility="Hidden" x:Name="EditATTNotes" Grid.Row="3" Grid.ColumnSpan="3" Panel.ZIndex="5" Margin="10,34,25,39" Grid.RowSpan="2" Grid.Column="3"/>
+
+                    <TextBlock x:Name="NameATTTXT" Visibility="Hidden" Text="Name" Grid.Row="1" Grid.ColumnSpan="2" Foreground="White" Panel.ZIndex="5" Margin="0,29,31,58" Grid.RowSpan="2"/>
+                    <TextBlock x:Name="RangeATTTXT" Visibility="Hidden" Text="Range" Grid.Row="1" Panel.ZIndex="5" Grid.Column="3" Margin="10,36,40,47" Grid.RowSpan="2" Grid.ColumnSpan="2"/>
+                    <TextBlock x:Name="HitATTTXT" Visibility="Hidden" Text="Hit/DC" Grid.Row="1" Grid.Column="6" Grid.ColumnSpan="2" Panel.ZIndex="5" Margin="10,36,20,58" Grid.RowSpan="2"/>
+                    <TextBlock x:Name="DamageATTTXT"  Visibility="Hidden" Text="Damage" Grid.Row="2" Grid.ColumnSpan="2" Panel.ZIndex="5" Margin="0,57,21,29" Grid.RowSpan="2"/>
+                    <TextBlock x:Name="NotesATTTXT"  Visibility="Hidden" Text="Notes" Grid.Row="3" Grid.ColumnSpan="2" Panel.ZIndex="5" Margin="10,0,26,28" Grid.Column="3"/>
+
+                    <Button x:Name="ATTDone" Visibility="Hidden" Content="Done" Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2"  Margin="20,70,20,70" Background="White" BorderBrush="{x:Null}" Foreground="Black" Click="EditDone"/>
+
+                </Grid>
+            </TabItem>
+            <TabItem Style="{DynamicResource TabItemNewStyle}" Header="Spells" BorderBrush="#FF061A2A" Foreground="White" Height="50" Width="110" FontSize="20" FontWeight="Bold" Background="#FF061A2A">
+                <Grid Background="#FF061A2A">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+                </Grid>
+            </TabItem>
+            <TabItem Style="{DynamicResource TabItemNewStyle}" Header="Inventory" BorderBrush="#FF061A2A" Foreground="White" Height="50" Width="110" FontSize="20" FontWeight="Bold" Background="#FF091B2B">
+                <Grid ScrollViewer.CanContentScroll="True" Background="#FF091B2B">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="145*"/>
+                        <ColumnDefinition Width="33*"/>
+                        <ColumnDefinition Width="88*"/>
+                        <ColumnDefinition Width="88*"/>
+                        <ColumnDefinition Width="88*"/>
+                        <ColumnDefinition Width="88*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="4*"/>
+                        <RowDefinition Height="4*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Add Item:" TextAlignment="Center" Padding="8" Grid.ColumnSpan="2" Margin="0,0,23,0"/>
+                    <TextBlock Text="Name:" Grid.Column="2" TextAlignment="Left" FontSize="12" Grid.ColumnSpan="2" Margin="0,0,88,0"/>
+                    <TextBlock Text="Amount:"  Grid.Column="3" TextAlignment="Left" FontSize="12" Grid.ColumnSpan="2" Margin="0,0,88,0"/>
+                    <TextBlock Text="Weight:"  Grid.Column="4" TextAlignment="Left" FontSize="12"/>
+                    <TextBox x:Name="InvAddName" Grid.Column="2" Margin="0,15,5,0"/>
+                    <TextBox x:Name="InvAddAmount" Grid.Column="3" Margin="0,15,5,0"/>
+                    <TextBox x:Name="InvAddWeight" Grid.Column="4" Margin="0,15,5,0"/>
+                    <Button x:Name="Add" Content="ADD" Grid.Column="5" Margin="20,15,20,0" Background="White" FontSize="12" Click="Inventory_Add"/>
+                    <Border Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="6" Grid.RowSpan="2" Margin="20,20,20,100" BorderBrush="White" Background="White">
+                        <ScrollViewer>
+                            <TextBlock x:Name="Inventory" Text="{Binding Inventory, UpdateSourceTrigger=PropertyChanged}" Foreground="Black" FontSize="14" TextWrapping="WrapWithOverflow"/>
+                        </ScrollViewer>
+                    </Border>
+                    <TextBlock Grid.Row="3" Grid.ColumnSpan="6" Margin="0,70,0,20" Text="Remove item Number: " Padding="15"/>
+                    <TextBox x:Name="RemoveIndex" Grid.Row="3" Grid.Column="3" Grid.ColumnSpan="1" Margin="10,85,30,65" BorderBrush="{x:Null}" />
+                    <Button x:Name="Remove" Content="Remove" Grid.Column="5" Grid.Row="3" Margin="10,85,10,65" Background="White" FontSize="12" Click="Inventory_Remove"/>
+                    <TextBlock Grid.Row="3" Grid.ColumnSpan="6" Margin="0,110,0,20" Text="Edit item Number: " Padding="15"/>
+                    <TextBox x:Name="EditIndex" Grid.Row="3" Grid.Column="3" Grid.ColumnSpan="1" Margin="10,125,30,25" BorderBrush="{x:Null}" />
+                    <Button x:Name="Edit" Content="Edit" Grid.Column="5" Grid.Row="3" Margin="10,125,10,25" Background="White" FontSize="12" Click="Inventory_Edit"/>
+
+                    <TextBlock x:Name="edititem" Visibility="Hidden" HorizontalAlignment="Left" Margin="0,45,0,0" TextWrapping="Wrap" Text="Edit Item" VerticalAlignment="Top" Grid.ColumnSpan="6" Grid.RowSpan="3" Background="#FFC3C3C3" FontSize="30" TextAlignment="Center" Height="300" Width="461"/>
+                    <TextBox Visibility="Hidden" x:Name="EditName" Grid.Row="1" Margin="50,80,10,40" Grid.ColumnSpan="3"/>
+                    <TextBox Visibility="Hidden" x:Name="EditDescription" Grid.Row="2" Margin="50,0,10,120" Grid.ColumnSpan="3"/>
+                    <TextBox Visibility="Hidden" x:Name="EditAmount" Grid.Row="1" Grid.Column="3" Margin="10,80,50,40" Grid.ColumnSpan="3"/>
+                    <TextBox Visibility="Hidden" x:Name="EditWeight" Grid.Row="2" Grid.Column="3" Margin="10,0,50,120" Grid.ColumnSpan="3"/>
+
+                    <TextBlock x:Name="NameTXT" Visibility="Hidden" Text="Name" Grid.Row="1" Margin="50,50,10,100" Grid.ColumnSpan="3" Foreground="White"/>
+                    <TextBlock x:Name="DescTXT" Visibility="Hidden" Text="Description" Grid.Row="2" Margin="50,-30,10,180" Grid.ColumnSpan="3"/>
+                    <TextBlock x:Name="AmountTXT" Visibility="Hidden" Text="Amount" Grid.Row="1" Grid.Column="3" Margin="10,50,50,100" Grid.ColumnSpan="3"/>
+                    <TextBlock x:Name="WeightTXT"  Visibility="Hidden" Text="Weight" Grid.Row="2" Grid.Column="3" Margin="10,-30,50,180" Grid.ColumnSpan="3"/>
+
+                    <Button x:Name="Done" Visibility="Hidden" Content="Done" Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2"  Margin="20,70,20,70" Background="White" BorderBrush="{x:Null}" Foreground="Black" Click="EditDone"/>
+
+                </Grid>
+            </TabItem>
+            <TabItem Style="{DynamicResource TabItemNewStyle}" Header="Extras" BorderBrush="#FF061A2A" Foreground="White" Height="50" Width="110" FontSize="20" FontWeight="Bold" Background="#FF091B2B">
+                <Grid Background="#FF061A2A">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="204*"/>
+                        <ColumnDefinition Width="50*"/>
+                        <ColumnDefinition Width="204*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Margin="20" Text="Alignment:" TextAlignment="Center" Padding="15"/>
+                    <TextBox x:Name="Alignment" Text="{Binding Alignment}" Margin="205,20,20,20" Grid.ColumnSpan="3"/>
+                    <TextBlock Margin="20,101,20,40" Text="Background:" TextAlignment="Left" Padding="15" Grid.RowSpan="2"/>
+                    <TextBox x:Name="Background" Text="{Binding Background}" Margin="20,51,20,49" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1" Grid.RowSpan="2" FontSize="14" TextWrapping="WrapWithOverflow"/>
+                    <TextBlock Margin="20,51,20,91" Text="Notes:" TextAlignment="Left" Padding="15" Grid.RowSpan="2" Grid.Row="2"/>
+                    <TextBox x:Name="Notes"  Text="{Binding Notes}" Margin="20,100,20,0" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="2" Grid.RowSpan="2" FontSize="14" TextWrapping="WrapWithOverflow"/>
+
+                </Grid>
+
+            </TabItem>
+        </TabControl>
+        <TextBlock Grid.Column="11" Grid.Row="3" Text="/" TextAlignment="Center" Foreground="White" VerticalAlignment="Top" FontSize="70" Margin="1,10,0,0" HorizontalAlignment="Left" Grid.RowSpan="4" Width="338" Grid.ColumnSpan="3">
+            <TextBlock.Background>
+                <ImageBrush ImageSource="Images/frame.png" Stretch="Fill"/>
+            </TextBlock.Background>
+        </TextBlock>
+        <TextBox x:Name="CurrentHP" Text="{Binding CurrentHP}" Grid.Column="11" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="76,31,0,0" Grid.Row="3" TextWrapping="Wrap" VerticalAlignment="Top" Width="100" Grid.RowSpan="3" Height="60" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="White" FontSize="45"/>
+        <TextBox x:Name="MaxHP"  Text="{Binding MaxHP}" Grid.Column="12" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="80,30,0,0" Grid.Row="3" TextWrapping="Wrap" VerticalAlignment="Top" Width="100" Grid.RowSpan="3" Height="60" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="White" FontSize="45"/>
+        <TextBox x:Name="TempHP"  Text="{Binding TempHP}" Grid.Column="12" HorizontalAlignment="Center" Grid.Row="5" TextWrapping="Wrap" TextAlignment="Center" Padding="10" VerticalAlignment="Top" Width="57" Height="38" Margin="0,10,0,0" Foreground="White" BorderBrush="{x:Null}" Grid.RowSpan="2">
+            <TextBox.Background>
+                <ImageBrush ImageSource="Images/frame.png"/>
+            </TextBox.Background>
+        </TextBox>
+        <TextBlock Grid.Column="10" HorizontalAlignment="Right" Grid.Row="7" TextWrapping="Wrap" Text="Death Saves" TextAlignment="Center" Grid.RowSpan="3" Width="340" Margin="0,0,112,39" Grid.ColumnSpan="5" Foreground="White" FontSize="30">
+            <TextBlock.Background>
+                <ImageBrush ImageSource="Images/frame.png"/>
+            </TextBlock.Background>
+        </TextBlock>
+        <CheckBox x:Name="fail1" IsChecked="{Binding DS_fail[0]}" Grid.Column="11" Grid.Row="8" Margin="20,10,76,10" BorderBrush="#FFFFAB17" />
+        <CheckBox x:Name="fail2" IsChecked="{Binding DS_fail[1]}" Grid.Column="11" Grid.Row="8" Margin="50,10,46,10" BorderBrush="#FFFFAB17" />
+        <CheckBox x:Name="fail3" IsChecked="{Binding DS_fail[2]}" Grid.Column="11" Grid.Row="8" Margin="80,10,16,10" BorderBrush="#FFFFAB17" />
+
+        <CheckBox x:Name="succ1" IsChecked="{Binding DS_succ[0]}" Grid.Column="13" Grid.Row="8" Margin="76,10,20,10" BorderBrush="#FFFFAB17"/>
+        <CheckBox x:Name="succ2" IsChecked="{Binding DS_succ[1]}" Grid.Column="13" Grid.Row="8" Margin="46,10,50,10" BorderBrush="#FFFFAB17"/>
+        <CheckBox x:Name="succ3" IsChecked="{Binding DS_succ[2]}"  Grid.Column="13" Grid.Row="8" Margin="16,10,80,10" BorderBrush="#FFFFAB17"/>
+
+        <TextBlock Grid.Column="12" Grid.Row="8" Foreground="White" Text="fail / succes" TextAlignment="Center" FontSize="18" Padding="5"/>
+        <TextBlock Text="Defenses" TextAlignment="Center" Grid.Column="14" HorizontalAlignment="Right" Margin="0,28,43,0" Grid.Row="4" TextWrapping="Wrap"  FontSize="18" VerticalAlignment="Top" Width="252" Height="81" Grid.RowSpan="3" Foreground="White" Grid.ColumnSpan="3">
+            <TextBlock.Background>
+                <ImageBrush ImageSource="Images/frame.png"/>
+            </TextBlock.Background>
+        </TextBlock>
+        <TextBox x:Name="DefensesTXT" Text="{Binding Defenses}"  Grid.Column="14" HorizontalAlignment="Left" Margin="66,10,0,0" Grid.Row="5" TextWrapping="WrapWithOverflow"  FontSize="18" VerticalAlignment="Top" Height="49" Grid.RowSpan="2" Width="207" Grid.ColumnSpan="3" Foreground="White" Background="{x:Null}" BorderBrush="{x:Null}" />
+        <TextBlock Text="Conditions" TextAlignment="Center" Grid.Column="14" HorizontalAlignment="Left" Margin="44,38,0,0" Grid.Row="6" TextWrapping="Wrap"  FontSize="18" VerticalAlignment="Top" Width="252" Height="81" Grid.RowSpan="4" Foreground="White" Grid.ColumnSpan="3">
+            <TextBlock.Background>
+                <ImageBrush ImageSource="Images/frame.png"/>
+            </TextBlock.Background>
+        </TextBlock>
+        <TextBox  Text="{Binding Conditions}" x:Name="ConditionxTXT" Grid.Column="14" HorizontalAlignment="Left" Margin="66,22,0,0" Grid.Row="7" TextWrapping="WrapWithOverflow"  FontSize="18" VerticalAlignment="Top" Height="49" Grid.RowSpan="2" Width="207" Foreground="White" Background="{x:Null}" BorderBrush="{x:Null}" Grid.ColumnSpan="3" />
+        <Image Grid.Column="7" HorizontalAlignment="Left" Height="80" Margin="56,20,0,0" VerticalAlignment="Top" Width="80" Source="Images/frame.png" Stretch="UniformToFill" Grid.ColumnSpan="2" Grid.Row="4" Grid.RowSpan="3"/>
+        <CheckBox x:Name="ckbxInspiration" Grid.Column="7" IsChecked="{Binding Inspiration}" HorizontalAlignment="Left" VerticalAlignment="Top" Height="20" Width="16" RenderTransformOrigin="0.5,0.5" Margin="88,12,0,0" BorderBrush="#FFFEAA17" Grid.Row="5" >
+            <CheckBox.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform ScaleX="2" ScaleY="2"/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="0.126"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </CheckBox.RenderTransform>
+        </CheckBox>
+        <TextBlock Grid.Column="7" HorizontalAlignment="Left" Margin="68,37,0,0" TextWrapping="Wrap" Text="Inspiration" VerticalAlignment="Top" Foreground="White" Grid.RowSpan="2" Grid.Row="5" Grid.ColumnSpan="2"/>
+
+        <Image Grid.Column="13" Grid.ColumnSpan="4" Margin="55,0,0,14" Grid.Row="10" Source="Images/frame.png" Stretch="Fill" HorizontalAlignment="Left" Width="354" Height="563" VerticalAlignment="Bottom" Grid.RowSpan="15"/>
+
+        <Button x:Name="D20" Style="{DynamicResource DNDButton}" Grid.Column="15" Grid.Row="12" Grid.ColumnSpan="2" Margin="80,0,50,0" BorderBrush="{x:Null}" Foreground="{x:Null}" Grid.RowSpan="2" MouseMove="DiceMouseOver" MouseLeave="DiceMouseGone" Click="DiceClick">
+            <Button.Background>
+                <ImageBrush ImageSource="Images/D20.PNG" Stretch="UniformToFill"/>
+            </Button.Background>
+        </Button>
+        <Button x:Name="D12" Style="{DynamicResource DNDButton}" Grid.Column="15" Grid.Row="13" Grid.ColumnSpan="2" Margin="80,16,50,25" BorderBrush="{x:Null}" Foreground="{x:Null}" Grid.RowSpan="3" MouseMove="DiceMouseOver" MouseLeave="DiceMouseGone" Click="DiceClick">
+            <Button.Background>
+                <ImageBrush ImageSource="Images/D12.PNG" Stretch="UniformToFill"/>
+            </Button.Background>
+        </Button>
+        <Button x:Name="D10" Style="{DynamicResource DNDButton}" Grid.Column="15" Grid.Row="14" Margin="80,34,50,5" BorderBrush="{x:Null}" Foreground="{x:Null}" Grid.RowSpan="3" Grid.ColumnSpan="2" MouseMove="DiceMouseOver" MouseLeave="DiceMouseGone" Click="DiceClick">
+            <Button.Background>
+                <ImageBrush ImageSource="Images/D10.PNG" Stretch="UniformToFill"/>
+            </Button.Background>
+        </Button>
+        <Button x:Name="D8" Style="{DynamicResource DNDButton}" Grid.Column="15" Grid.Row="16" Grid.ColumnSpan="2" Margin="80,20,50,20" BorderBrush="{x:Null}" Foreground="{x:Null}" Grid.RowSpan="3" MouseMove="DiceMouseOver" MouseLeave="DiceMouseGone" Click="DiceClick">
+            <Button.Background>
+                <ImageBrush ImageSource="Images/D8.PNG" Stretch="UniformToFill"/>
+            </Button.Background>
+        </Button>
+        <Button x:Name="D6" Style="{DynamicResource DNDButton}" Grid.Column="15" Grid.Row="18" Grid.ColumnSpan="2" Margin="80,1,50,0" BorderBrush="{x:Null}" Foreground="{x:Null}" Grid.RowSpan="2" MouseMove="DiceMouseOver" MouseLeave="DiceMouseGone" Click="DiceClick">
+            <Button.Background>
+                <ImageBrush ImageSource="Images/D6.PNG" Stretch="UniformToFill"/>
+            </Button.Background>
+        </Button>
+        <Button x:Name="D4" Style="{DynamicResource DNDButton}" Grid.Column="15" Grid.Row="19" Grid.ColumnSpan="2" Margin="80,19,50,19" BorderBrush="{x:Null}" Foreground="{x:Null}" Grid.RowSpan="3" MouseMove="DiceMouseOver" MouseLeave="DiceMouseGone" Click="DiceClick">
+            <Button.Background>
+                <ImageBrush ImageSource="Images/D4.PNG" Stretch="UniformToFill"/>
+            </Button.Background>
+        </Button>
+        <Button x:Name="D100" Style="{DynamicResource DNDButton}" Grid.Column="15" Grid.Row="21" Grid.ColumnSpan="2" Margin="80,1,50,39" BorderBrush="{x:Null}" Foreground="{x:Null}" Grid.RowSpan="3" MouseMove="DiceMouseOver" MouseLeave="DiceMouseGone" Click="DiceClick">
+            <Button.Background>
+                <ImageBrush ImageSource="Images/D100.PNG" Stretch="UniformToFill"/>
+            </Button.Background>
+        </Button>
+
+        <TextBlock x:Name="D20txt" Visibility="Hidden" Grid.Column="15" Grid.Row="12" Margin="43,31,10,25" Width="60" Grid.RowSpan="2" Text="D20" Foreground="White" FontSize="16" TextAlignment="Right" Background="#FF091B2B"/>
+        <TextBlock x:Name="D12txt" Visibility="Hidden" Grid.Column="15" Grid.Row="14" Margin="43,6,10,10" Width="60" Text="D12" Foreground="White" FontSize="16" TextAlignment="Right" Background="#FF091B2B"/>
+        <TextBlock x:Name="D10txt" Visibility="Hidden" Grid.Column="15" Grid.Row="15" Margin="43,27,10,29" Width="60" Grid.RowSpan="2" Text="D10" Foreground="White" FontSize="16" TextAlignment="Right" Background="#FF091B2B"/>
+        <TextBlock x:Name="D8txt" Visibility="Hidden" Grid.Column="15" Grid.Row="17" Margin="43,8,10,8" Width="60" Text="D8" Foreground="White" FontSize="16" TextAlignment="Right" Background="#FF091B2B"/>
+        <TextBlock x:Name="D6txt" Visibility="Hidden" Grid.Column="15" Grid.Row="18" Margin="43,29,10,27" Width="60" Text="D6" Foreground="White" FontSize="16" TextAlignment="Right" Grid.RowSpan="2" Background="#FF091B2B"/>
+        <TextBlock x:Name="D4txt" Visibility="Hidden" Grid.Column="15" Grid.Row="20" Margin="43,13,10,4" Width="60" Text="D4" Foreground="White" FontSize="16" TextAlignment="Right" Background="#FF091B2B"/>
+        <TextBlock x:Name="D100txt" Visibility="Hidden" Grid.Column="15" Grid.Row="21" Margin="43,31,10,24" Width="60" Grid.RowSpan="2" Text="D100" Foreground="White" FontSize="16" TextAlignment="Right" Background="#FF091B2B"/>
+
+        <ScrollViewer Grid.Column="13" HorizontalAlignment="Left" Margin="113,0,0,0" Grid.Row="12" VerticalAlignment="Top" Grid.ColumnSpan="3" Height="433" Width="170" Background="White" Grid.RowSpan="11">
+            <TextBlock x:Name="DiceResult" TextWrapping="WrapWithOverflow" Text="Roll Results:" FontSize="18" ScrollViewer.CanContentScroll="True"/>
+        </ScrollViewer>
+
+        <Button Grid.Row="23" Grid.Column="14" Grid.ColumnSpan="2" Margin="0,10,55,0" Content="Clear" FontSize="16" Background="White" BorderBrush="{x:Null}" Click="Clear_Click"/>
+
+    </Grid>
+</Window>

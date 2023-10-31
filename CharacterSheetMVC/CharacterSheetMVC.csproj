@@ -1,0 +1,124 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net7.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Views\Images\AddSkill.png" />
+    <None Remove="Views\Images\ArmorClass.png" />
+    <None Remove="Views\Images\Background.jpg" />
+    <None Remove="Views\Images\D10.PNG" />
+    <None Remove="Views\Images\D100.PNG" />
+    <None Remove="Views\Images\D12.PNG" />
+    <None Remove="Views\Images\D20.PNG" />
+    <None Remove="Views\Images\D20MouseOver.PNG" />
+    <None Remove="Views\Images\D4.PNG" />
+    <None Remove="Views\Images\D6.PNG" />
+    <None Remove="Views\Images\D8.PNG" />
+    <None Remove="Views\Images\Dice.PNG" />
+    <None Remove="Views\Images\frame.png" />
+    <None Remove="Views\Images\frameLong.png" />
+    <None Remove="Views\Images\frameTall.png" />
+    <None Remove="Views\Images\picturetopeople.org-7826eae482e3a2b4cda5cb2ebf10f106f7543c5b9f074f4826.png" />
+    <None Remove="Views\Images\picturetopeople.org-85bd9829988b0644f4adf4270e4ddcdd05127761cae7ec66ad.png" />
+    <None Remove="Views\Images\picturetopeople.org-88582af15a4c9c45ff0d67170f16807840656cabc62d4d95ec.png" />
+    <None Remove="Views\Images\picturetopeople.org-8d3340c71ea72dbfda7788d8fa02542a39dadef493342ae240.png" />
+    <None Remove="Views\Images\picturetopeople.org-d5b743e785a878a3b68847572b09f1a8ba5c9d7ae9a5c53d8b.png" />
+    <None Remove="Views\Images\picturetopeople.org-f1462f3a804ecad04937bc5ed7005d8972e1ff2105b0d588a4.png" />
+    <None Remove="Views\Images\portrait.jpg" />
+    <None Remove="Views\Images\PROFICIENCIES-LANGUAGES.png" />
+    <None Remove="Views\Images\SavingThrows.png" />
+    <None Remove="Views\Images\Senses.png" />
+    <None Remove="Views\Images\SKILL.png" />
+    <None Remove="Views\Images\Skills.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Views\Images\AddSkill.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Views\Images\ArmorClass.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Views\Images\Background.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Views\Images\D10.PNG">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Views\Images\D100.PNG">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Views\Images\D12.PNG">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Views\Images\D20.PNG">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Views\Images\D20MouseOver.PNG">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Views\Images\D4.PNG">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Views\Images\D6.PNG">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Views\Images\D8.PNG">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Views\Images\Dice.PNG">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Views\Images\frame.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Views\Images\frameLong.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Views\Images\frameTall.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Views\Images\picturetopeople.org-7826eae482e3a2b4cda5cb2ebf10f106f7543c5b9f074f4826.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Views\Images\picturetopeople.org-85bd9829988b0644f4adf4270e4ddcdd05127761cae7ec66ad.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Views\Images\picturetopeople.org-88582af15a4c9c45ff0d67170f16807840656cabc62d4d95ec.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Views\Images\picturetopeople.org-8d3340c71ea72dbfda7788d8fa02542a39dadef493342ae240.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Views\Images\picturetopeople.org-d5b743e785a878a3b68847572b09f1a8ba5c9d7ae9a5c53d8b.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Views\Images\picturetopeople.org-f1462f3a804ecad04937bc5ed7005d8972e1ff2105b0d588a4.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Views\Images\portrait.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Views\Images\PROFICIENCIES-LANGUAGES.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Views\Images\SavingThrows.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Views\Images\Senses.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Views\Images\SKILL.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Views\Images\Skills.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+
+</Project>
